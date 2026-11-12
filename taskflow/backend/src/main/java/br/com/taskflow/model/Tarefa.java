@@ -76,6 +76,12 @@ public class Tarefa {
                 && status != StatusTarefa.CONCLUIDA;
     }
 
+    /** Prazo entre hoje e daqui a 7 dias (inclusive). Usado no filtro "semana" e no dashboard. */
+    public boolean venceNosProximos7Dias() {
+        LocalDate hoje = LocalDate.now();
+        return prazo != null && !prazo.isBefore(hoje) && !prazo.isAfter(hoje.plusDays(7));
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

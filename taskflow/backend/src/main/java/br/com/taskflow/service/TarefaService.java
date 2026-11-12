@@ -133,7 +133,7 @@ public class TarefaService {
         return switch (filtro) {
             case "atrasadas" -> t.isAtrasada();
             case "hoje" -> hoje.equals(p);
-            case "semana" -> p != null && !p.isBefore(hoje) && !p.isAfter(hoje.plusDays(7));
+            case "semana" -> t.venceNosProximos7Dias();
             case "sem-prazo" -> p == null;
             default -> true;
         };

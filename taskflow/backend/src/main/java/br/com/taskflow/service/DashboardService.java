@@ -38,9 +38,8 @@ public class DashboardService {
 
         List<Tarefa> abertas = tarefas.stream().filter(t -> t.getStatus() != StatusTarefa.CONCLUIDA).toList();
         long venceHoje = abertas.stream().filter(t -> hoje.equals(t.getPrazo())).count();
-        long proximos7Dias = abertas.stream()
-                .filter(t -> t.getPrazo() != null && t.getPrazo().isAfter(hoje) && !t.getPrazo().isAfter(hoje.plusDays(7)))
-                .count();
+        // Mesma regra do filtro "Próximos 7 dias" do quadro (inclui hoje)
+        long proximos7Dias = abertas.stream().filter(Tarefa::venceNosProximos7Dias).count();
 
         int percentual = total == 0 ? 0 : (int) Math.round(concluidas * 100.0 / total);
 
