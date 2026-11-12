@@ -90,6 +90,15 @@ npm test          # abre o Chrome e roda de novo a cada alteração
 npm run test:ci   # roda uma vez, sem abrir janela
 ```
 
+Testes E2E (Playwright, usam o Google Chrome instalado e precisam do Java/Maven):
+```bash
+npm run e2e       # sobe backend e frontend sozinhos e testa no navegador
+npm run e2e:ui    # mesma coisa, com a interface visual do Playwright
+```
+Os testes E2E sobem a API na porta **8081** com banco H2 em memória (não mexem no seu MySQL)
+e o frontend na porta **4300**, então podem rodar junto com o ambiente de desenvolvimento.
+O relatório fica em `frontend/playwright-report/` (abra com `npx playwright show-report`).
+
 ## Endpoints da API
 
 Todas as rotas, exceto cadastro e login, exigem o cabeçalho `Authorization: Bearer <token>`.
