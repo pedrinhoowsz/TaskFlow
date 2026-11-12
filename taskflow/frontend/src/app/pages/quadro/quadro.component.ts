@@ -2,7 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TarefaService } from '../../core/tarefa.service';
@@ -62,11 +62,16 @@ export class QuadroComponent implements OnInit {
     this.carregar();
   }
 
+  // Busca em andamento: é cancelada se outra começar, para uma resposta
+  // antiga (filtro anterior) não sobrescrever a mais nova
+  private carregamento?: Subscription;
+
   carregar(): void {
     this.erro.set('');
     // O status é filtrado aqui na tela (escondendo colunas), não na API
     const { status: _status, ...resto } = this.filtro;
-    this.tarefaService.listar(resto).subscribe({
+    this.carregamento?.unsubscribe();
+    this.carregamento = this.tarefaService.listar(resto).subscribe({
       next: (t) => {
         this.tarefas.set(t);
         this.carregando.set(false);
