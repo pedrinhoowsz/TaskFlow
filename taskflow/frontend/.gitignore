@@ -2,3 +2,7 @@ node_modules/
 dist/
 .angular/
 out-tsc/
+
+# Playwright (testes E2E)
+test-results/
+playwright-report/

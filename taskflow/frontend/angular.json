@@ -30,6 +30,14 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "e2e": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                { "replace": "src/app/core/api.config.ts", "with": "src/app/core/api.config.e2e.ts" }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -38,7 +46,8 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": { "buildTarget": "taskflow-web:build:production" },
-            "development": { "buildTarget": "taskflow-web:build:development" }
+            "development": { "buildTarget": "taskflow-web:build:development" },
+            "e2e": { "buildTarget": "taskflow-web:build:e2e" }
           },
           "defaultConfiguration": "development"
         },
