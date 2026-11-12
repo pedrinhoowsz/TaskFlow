@@ -1,0 +1,26 @@
+.layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+.painel { background: var(--surface); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+.form { position: sticky; top: 20px; }
+.form h2 { font-size: 16px; margin-bottom: 14px; }
+
+.cores { display: flex; flex-wrap: wrap; gap: 8px; }
+.cor { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--surface); cursor: pointer; box-shadow: 0 0 0 1px var(--line); }
+.cor.sel { box-shadow: 0 0 0 2px var(--ink); }
+
+.acoes { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+
+.lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.projeto { border-top: 4px solid; display: flex; flex-direction: column; gap: 8px; }
+.projeto.editando { box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
+.projeto .topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.projeto h3 { font-size: 16px; }
+.projeto p { margin: 0; color: var(--ink-2); font-size: 13.5px; flex: 1; }
+.projeto .acoes { justify-content: flex-start; }
+.confirma { font-size: 12.5px; font-weight: 700; color: var(--danger); width: 100%; }
+.txt-perigo { color: var(--danger); }
+.vazio { grid-column: 1 / -1; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .form { position: static; }
+}

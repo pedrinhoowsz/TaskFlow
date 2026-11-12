@@ -1,0 +1,67 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Projetos</h1>
+      <p>Agrupe suas tarefas por projeto. Cada projeto tem uma cor que aparece no quadro.</p>
+    </div>
+  </div>
+
+  @if (erro()) {
+    <div class="alerta alerta-erro">{{ erro() }}</div>
+  }
+
+  <div class="layout">
+    <form class="painel form" (ngSubmit)="salvar()" #f="ngForm">
+      <h2>{{ editandoId() ? 'Editar projeto' : 'Novo projeto' }}</h2>
+      <div class="campo">
+        <label for="nome">Nome</label>
+        <input id="nome" class="input" name="nome" [(ngModel)]="form.nome" required maxlength="100" placeholder="Ex.: Faculdade">
+      </div>
+      <div class="campo">
+        <label for="desc">Descrição</label>
+        <textarea id="desc" class="input" name="descricao" [(ngModel)]="form.descricao" maxlength="500" placeholder="Opcional"></textarea>
+      </div>
+      <div class="campo">
+        <label>Cor</label>
+        <div class="cores">
+          @for (c of cores; track c) {
+            <button type="button" class="cor" [style.background]="c" [class.sel]="form.cor === c"
+                    (click)="form.cor = c" [attr.aria-label]="'Cor ' + c"></button>
+          }
+        </div>
+      </div>
+      <div class="acoes">
+        @if (editandoId()) {
+          <button type="button" class="btn btn-ghost" (click)="cancelar()">Cancelar</button>
+        }
+        <button class="btn" type="submit" [disabled]="salvando() || f.invalid">
+          {{ editandoId() ? 'Salvar alterações' : 'Criar projeto' }}
+        </button>
+      </div>
+    </form>
+
+    <div class="lista">
+      @for (p of projetos(); track p.id) {
+        <article class="painel projeto" [class.editando]="editandoId() === p.id" [style.border-top-color]="p.cor">
+          <div class="topo">
+            <h3>{{ p.nome }}</h3>
+            <span class="tag tag-neutra">{{ p.totalTarefas }} {{ p.totalTarefas === 1 ? 'tarefa' : 'tarefas' }}</span>
+          </div>
+          <p>{{ p.descricao || 'Sem descrição' }}</p>
+          <div class="acoes">
+            @if (excluindoId() === p.id) {
+              <span class="confirma">As tarefas ficarão sem projeto. Excluir?</span>
+              <button class="btn btn-danger btn-sm" (click)="excluir(p)">Sim</button>
+              <button class="btn btn-ghost btn-sm" (click)="excluindoId.set(null)">Não</button>
+            } @else {
+              <button class="btn btn-ghost btn-sm" (click)="editar(p)">Editar</button>
+              <button class="btn btn-ghost btn-sm txt-perigo" (click)="excluindoId.set(p.id)">Excluir</button>
+            }
+          </div>
+        </article>
+      } @empty {
+        <div class="painel vazio">Você ainda não tem projetos. Crie o primeiro ao lado.</div>
+      }
+    </div>
+  </div>
+</div>
