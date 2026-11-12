@@ -1,0 +1,16 @@
+.overlay {
+  position: fixed; inset: 0; background: rgba(23, 26, 43, .45); z-index: 100;
+  display: flex; align-items: flex-start; justify-content: center; padding: 6vh 16px; overflow-y: auto;
+  animation: aparecer .15s ease-out;
+}
+.modal {
+  width: 100%; max-width: 560px; background: var(--surface); border-radius: 16px;
+  padding: 22px 24px; box-shadow: var(--shadow-lg);
+}
+header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+header h2 { font-size: 20px; }
+footer { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.espaco { flex: 1; }
+.excluir { color: var(--danger); }
+.confirma { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--danger); }
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }

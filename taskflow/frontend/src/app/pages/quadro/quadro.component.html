@@ -1,0 +1,104 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Quadro</h1>
+      <p>Arraste os cartões entre as colunas para mudar o status.</p>
+    </div>
+    <button class="btn" (click)="novaTarefa()">+ Nova tarefa</button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <input class="input busca" name="busca" [(ngModel)]="filtro.busca" (ngModelChange)="digitouBusca()"
+           placeholder="Buscar por título ou descrição...">
+
+    <select class="input" name="status" [(ngModel)]="filtro.status" aria-label="Status">
+      <option value="">Todos os status</option>
+      @for (s of colunas; track s) { <option [value]="s">{{ statusLabel[s] }}</option> }
+    </select>
+
+    <select class="input" name="prioridade" [(ngModel)]="filtro.prioridade" (ngModelChange)="carregar()" aria-label="Prioridade">
+      <option value="">Todas as prioridades</option>
+      @for (p of prioridadeLista; track p) { <option [value]="p">{{ prioridadeLabel[p] }}</option> }
+    </select>
+
+    <select class="input" name="projeto" [(ngModel)]="filtro.projetoId" (ngModelChange)="carregar()" aria-label="Projeto">
+      <option value="">Todos os projetos</option>
+      <option [ngValue]="0">Sem projeto</option>
+      @for (p of projetos(); track p.id) { <option [ngValue]="p.id">{{ p.nome }}</option> }
+    </select>
+
+    <select class="input" name="prazo" [(ngModel)]="filtro.prazo" (ngModelChange)="carregar()" aria-label="Prazo">
+      <option value="">Qualquer prazo</option>
+      <option value="atrasadas">Atrasadas</option>
+      <option value="hoje">Vencem hoje</option>
+      <option value="semana">Próximos 7 dias</option>
+      <option value="sem-prazo">Sem prazo</option>
+    </select>
+
+    <select class="input" name="ordenar" [(ngModel)]="filtro.ordenar" (ngModelChange)="carregar()" aria-label="Ordenar">
+      <option value="">Mais recentes</option>
+      <option value="prazo">Por prazo</option>
+      <option value="prioridade">Por prioridade</option>
+    </select>
+
+    @if (temFiltro()) {
+      <button class="btn btn-ghost btn-sm" (click)="limparFiltros()">Limpar</button>
+    }
+  </div>
+
+  @if (erro()) {
+    <div class="alerta alerta-erro">{{ erro() }}</div>
+  }
+
+  <!-- Quadro Kanban -->
+  <div class="quadro" cdkDropListGroup>
+    @for (coluna of colunas; track coluna) {
+      @if (colunaVisivel(coluna)) {
+        <section class="coluna" [attr.data-status]="coluna">
+          <header>
+            <span class="titulo-coluna"><span class="ponto"></span>{{ statusLabel[coluna] }}</span>
+            <span class="contador">{{ porColuna()[coluna].length }}</span>
+          </header>
+
+          <div class="lista" cdkDropList [cdkDropListData]="coluna" (cdkDropListDropped)="soltar($event)">
+            @for (t of porColuna()[coluna]; track t.id) {
+              <article class="cartao" cdkDrag [cdkDragData]="t" (click)="editar(t)"
+                       [class.concluida]="t.status === 'CONCLUIDA'"
+                       [style.border-left-color]="t.projetoCor ?? 'transparent'">
+                <div class="cartao-topo">
+                  <span class="tag tag-{{ t.prioridade }}">{{ prioridadeLabel[t.prioridade] }}</span>
+                  @if (t.projetoNome) {
+                    <span class="projeto"><span class="bolinha" [style.background]="t.projetoCor"></span>{{ t.projetoNome }}</span>
+                  }
+                </div>
+                <h3>{{ t.titulo }}</h3>
+                @if (t.descricao) {
+                  <p>{{ t.descricao }}</p>
+                }
+                @if (t.prazo) {
+                  <span class="tag" [class.tag-atrasada]="t.atrasada" [class.tag-hoje]="venceHoje(t)"
+                        [class.tag-neutra]="!t.atrasada && !venceHoje(t)">
+                    📅 {{ t.atrasada ? 'Atrasada · ' : venceHoje(t) ? 'Hoje · ' : '' }}{{ t.prazo + 'T00:00' | date: 'dd/MM' }}
+                  </span>
+                }
+                <div class="placeholder" *cdkDragPlaceholder></div>
+              </article>
+            } @empty {
+              @if (!carregando()) {
+                <div class="coluna-vazia">Nenhuma tarefa aqui</div>
+              }
+            }
+          </div>
+
+          <button class="add" (click)="novaTarefa(coluna)">+ Adicionar tarefa</button>
+        </section>
+      }
+    }
+  </div>
+</div>
+
+@if (modalAberto()) {
+  <app-tarefa-form [tarefa]="tarefaEditando()" [projetos]="projetos()" [statusInicial]="statusNovo()"
+                   (salvo)="aoSalvar()" (fechar)="modalAberto.set(false)" />
+}

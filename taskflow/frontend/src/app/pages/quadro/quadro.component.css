@@ -1,0 +1,50 @@
+.filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.filtros .input { width: auto; height: 36px; font-size: 13px; }
+.filtros .busca { flex: 1 1 240px; min-width: 200px; }
+
+.quadro {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; align-items: start;
+}
+.coluna {
+  background: var(--surface-2); border-radius: 14px; padding: 12px; display: flex; flex-direction: column;
+  min-height: 200px;
+}
+.coluna header { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px 12px; }
+.titulo-coluna { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14px; }
+.ponto { width: 10px; height: 10px; border-radius: 3px; }
+[data-status="PENDENTE"] .ponto { background: var(--ink-3); }
+[data-status="EM_ANDAMENTO"] .ponto { background: var(--accent); }
+[data-status="CONCLUIDA"] .ponto { background: var(--ok); }
+.contador { font-size: 12px; font-weight: 800; color: var(--ink-3); background: var(--surface); padding: 2px 9px; border-radius: 999px; }
+
+.lista { display: flex; flex-direction: column; gap: 8px; min-height: 60px; flex: 1; }
+
+.cartao {
+  background: var(--surface); border-radius: 10px; padding: 12px 12px 12px 13px; box-shadow: var(--shadow);
+  border-left: 3px solid transparent; cursor: grab; display: flex; flex-direction: column; gap: 6px;
+  transition: box-shadow .15s;
+}
+.cartao:hover { box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.cartao h3 { font-size: 14.5px; font-weight: 700; line-height: 1.35; }
+.cartao p {
+  margin: 0; font-size: 13px; color: var(--ink-2);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.cartao .tag { align-self: flex-start; }
+.cartao.concluida h3 { text-decoration: line-through; color: var(--ink-3); }
+.cartao-topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.projeto { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--ink-3); min-width: 0; }
+
+.coluna-vazia { text-align: center; color: var(--ink-3); font-size: 13px; padding: 18px 0; border: 1.5px dashed var(--line); border-radius: 10px; }
+
+.add {
+  margin-top: 10px; border: none; background: transparent; color: var(--ink-2); font: inherit; font-weight: 700;
+  font-size: 13px; text-align: left; padding: 8px; border-radius: 8px; cursor: pointer;
+}
+.add:hover { background: rgba(0,0,0,.05); color: var(--ink); }
+
+/* Arrastar e soltar (Angular CDK) */
+.cdk-drag-preview { box-shadow: var(--shadow-lg); border-radius: 10px; transform: rotate(2deg); }
+.placeholder { background: var(--accent-soft); border: 2px dashed var(--accent); border-radius: 10px; min-height: 64px; }
+.cdk-drag-animating { transition: transform 200ms cubic-bezier(0, 0, 0.2, 1); }
+.lista.cdk-drop-list-dragging .cartao:not(.cdk-drag-placeholder) { transition: transform 200ms cubic-bezier(0, 0, 0.2, 1); }

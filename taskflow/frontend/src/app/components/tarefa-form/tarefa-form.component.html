@@ -1,0 +1,77 @@
+<div class="overlay" (click)="fechar.emit()">
+  <form class="modal" (click)="$event.stopPropagation()" (ngSubmit)="salvar()" #form="ngForm">
+    <header>
+      <h2>{{ tarefa() ? 'Editar tarefa' : 'Nova tarefa' }}</h2>
+      <button type="button" class="btn-icon" (click)="fechar.emit()" aria-label="Fechar">✕</button>
+    </header>
+
+    @if (erro()) {
+      <div class="alerta alerta-erro">{{ erro() }}</div>
+    }
+
+    <div class="campo">
+      <label for="titulo">Título</label>
+      <input id="titulo" class="input" name="titulo" [(ngModel)]="dados.titulo" required maxlength="150"
+             placeholder="O que precisa ser feito?" autofocus>
+    </div>
+
+    <div class="campo">
+      <label for="descricao">Descrição</label>
+      <textarea id="descricao" class="input" name="descricao" [(ngModel)]="dados.descricao" maxlength="1000"
+                placeholder="Detalhes, links, observações..."></textarea>
+    </div>
+
+    <div class="linha">
+      <div class="campo">
+        <label for="status">Status</label>
+        <select id="status" class="input" name="status" [(ngModel)]="dados.status">
+          @for (s of statusLista; track s) {
+            <option [value]="s">{{ statusLabel[s] }}</option>
+          }
+        </select>
+      </div>
+      <div class="campo">
+        <label for="prioridade">Prioridade</label>
+        <select id="prioridade" class="input" name="prioridade" [(ngModel)]="dados.prioridade">
+          @for (p of prioridadeLista; track p) {
+            <option [value]="p">{{ prioridadeLabel[p] }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="linha">
+      <div class="campo">
+        <label for="prazo">Prazo</label>
+        <input id="prazo" class="input" type="date" name="prazo" [(ngModel)]="dados.prazo">
+      </div>
+      <div class="campo">
+        <label for="projeto">Projeto</label>
+        <select id="projeto" class="input" name="projetoId" [(ngModel)]="dados.projetoId">
+          <option [ngValue]="null">Sem projeto</option>
+          @for (p of projetos(); track p.id) {
+            <option [ngValue]="p.id">{{ p.nome }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <footer>
+      @if (tarefa()) {
+        @if (confirmandoExclusao()) {
+          <span class="confirma">Excluir mesmo?
+            <button type="button" class="btn btn-danger btn-sm" (click)="excluir()" [disabled]="salvando()">Sim, excluir</button>
+            <button type="button" class="btn btn-ghost btn-sm" (click)="confirmandoExclusao.set(false)">Não</button>
+          </span>
+        } @else {
+          <button type="button" class="btn btn-ghost btn-sm excluir" (click)="confirmandoExclusao.set(true)">Excluir</button>
+        }
+      }
+      <span class="espaco"></span>
+      <button type="button" class="btn btn-ghost" (click)="fechar.emit()">Cancelar</button>
+      <button type="submit" class="btn" [disabled]="salvando() || form.invalid">
+        {{ salvando() ? 'Salvando...' : 'Salvar' }}
+      </button>
+    </footer>
+  </form>
+</div>
