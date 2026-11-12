@@ -1,0 +1,7 @@
+# Configurações locais com senhas
+local.properties
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+.vscode/
