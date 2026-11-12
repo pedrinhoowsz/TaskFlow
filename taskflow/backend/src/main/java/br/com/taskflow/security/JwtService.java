@@ -24,6 +24,11 @@ public class JwtService {
 
     public JwtService(@Value("${taskflow.jwt.secret}") String segredo,
                       @Value("${taskflow.jwt.expiracao-horas}") long expiracaoHoras) {
+        if (segredo == null || segredo.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException("Chave do JWT ausente ou curta demais (mínimo 32 caracteres). "
+                    + "Defina taskflow.jwt.secret em backend/local.properties (veja local.properties.example) "
+                    + "ou na variável de ambiente TASKFLOW_JWT_SECRET.");
+        }
         this.chave = Keys.hmacShaKeyFor(segredo.getBytes(StandardCharsets.UTF_8));
         this.expiracaoHoras = expiracaoHoras;
     }
