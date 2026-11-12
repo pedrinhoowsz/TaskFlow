@@ -109,9 +109,15 @@ public class TarefaService {
     private void preencher(Long usuarioId, Tarefa tarefa, TarefaRequest dados) {
         tarefa.setTitulo(dados.titulo().trim());
         tarefa.setDescricao(dados.descricao());
-        tarefa.setPrioridade(dados.prioridade() != null ? dados.prioridade() : Prioridade.MEDIA);
         tarefa.setPrazo(dados.prazo());
-        tarefa.alterarStatus(dados.status() != null ? dados.status() : StatusTarefa.PENDENTE);
+        // Status e prioridade não podem ficar vazios: se não vierem no corpo, a tarefa nova
+        // usa o padrão e a tarefa existente mantém o valor que já tinha.
+        if (dados.prioridade() != null) {
+            tarefa.setPrioridade(dados.prioridade());
+        }
+        if (dados.status() != null) {
+            tarefa.alterarStatus(dados.status());
+        }
         tarefa.setProjeto(dados.projetoId() != null
                 ? projetoService.buscarDoUsuario(usuarioId, dados.projetoId())
                 : null);
