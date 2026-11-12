@@ -1,5 +1,7 @@
 # TaskFlow — Gerenciador de tarefas
 
+[![CI](https://github.com/pedrinhoowsz/TaskFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/pedrinhoowsz/TaskFlow/actions/workflows/ci.yml)
+
 Sistema estilo Trello para organizar tarefas e projetos.
 
 **Tecnologias:** Angular 20 · Spring Boot 3.5 (Java 17+) · MySQL 8 · JWT
