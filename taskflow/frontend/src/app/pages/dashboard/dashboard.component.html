@@ -1,0 +1,108 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Olá, {{ primeiroNome() }}</h1>
+      <p>Um resumo de como estão suas tarefas.</p>
+    </div>
+    <a class="btn btn-ghost" routerLink="/quadro">Ir para o quadro →</a>
+  </div>
+
+  @if (erro()) {
+    <div class="alerta alerta-erro">{{ erro() }}</div>
+  }
+
+  @if (dados(); as d) {
+    <!-- Cartões de números -->
+    <div class="kpis">
+      <div class="kpi"><span>Total</span><strong>{{ d.total }}</strong></div>
+      <div class="kpi"><span>Pendentes</span><strong>{{ d.pendentes }}</strong></div>
+      <div class="kpi"><span>Em andamento</span><strong class="azul">{{ d.emAndamento }}</strong></div>
+      <div class="kpi"><span>Concluídas</span><strong class="verde">{{ d.concluidas }}</strong></div>
+      <div class="kpi" [class.alerta-kpi]="d.atrasadas > 0"><span>Atrasadas</span><strong class="vermelho">{{ d.atrasadas }}</strong></div>
+      <div class="kpi"><span>Vencem hoje</span><strong class="laranja">{{ d.venceHoje }}</strong></div>
+    </div>
+
+    <div class="grade">
+      <!-- Status -->
+      <section class="painel">
+        <h2>Progresso geral</h2>
+        <div class="rosca-wrap">
+          <div class="rosca" [style.background]="rosca()">
+            <div class="rosca-centro"><strong>{{ d.percentualConcluido }}%</strong><small>concluído</small></div>
+          </div>
+          <ul class="legenda">
+            <li><span class="bolinha" style="background:var(--ink-3)"></span>Pendente <b>{{ d.pendentes }}</b></li>
+            <li><span class="bolinha" style="background:var(--accent)"></span>Em andamento <b>{{ d.emAndamento }}</b></li>
+            <li><span class="bolinha" style="background:var(--ok)"></span>Concluída <b>{{ d.concluidas }}</b></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Prioridades -->
+      <section class="painel">
+        <h2>Por prioridade</h2>
+        <div class="barras-h">
+          @for (p of prioridadeLista; track p) {
+            <div class="barra-h">
+              <span class="rotulo">{{ prioridadeLabel[p] }}</span>
+              <div class="trilho">
+                <div class="preenchido p-{{ p }}" [style.width.%]="(d.porPrioridade[p] / maxPrioridade()) * 100"></div>
+              </div>
+              <b>{{ d.porPrioridade[p] }}</b>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Últimos 7 dias -->
+      <section class="painel">
+        <h2>Concluídas nos últimos 7 dias</h2>
+        <div class="colunas">
+          @for (dia of d.concluidasUltimos7Dias; track dia.data) {
+            <div class="col">
+              <span class="valor">{{ dia.quantidade || '' }}</span>
+              <div class="barra-v" [style.height.%]="(dia.quantidade / maxDia()) * 75"></div>
+              <span class="dia">{{ dia.data + 'T00:00' | date: 'EEE' }}</span>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Próximos prazos -->
+      <section class="painel">
+        <h2>Próximos prazos</h2>
+        @for (t of d.proximosPrazos; track t.id) {
+          <div class="prazo-item">
+            <div>
+              <strong>{{ t.titulo }}</strong>
+              <small>{{ statusLabel[t.status] }}@if (t.projetoNome) { · {{ t.projetoNome }} }</small>
+            </div>
+            <span class="tag" [class.tag-atrasada]="t.atrasada" [class.tag-neutra]="!t.atrasada">
+              {{ t.prazo + 'T00:00' | date: 'dd/MM' }}
+            </span>
+          </div>
+        } @empty {
+          <p class="vazio">Nenhuma tarefa aberta com prazo. 🎉</p>
+        }
+      </section>
+
+      <!-- Projetos -->
+      <section class="painel largo">
+        <h2>Andamento por projeto</h2>
+        @for (p of d.porProjeto; track p.id) {
+          <div class="projeto-linha">
+            <span class="nome"><span class="bolinha" [style.background]="p.cor"></span>{{ p.nome }}</span>
+            <div class="trilho">
+              <div class="preenchido" [style.width.%]="percentual(p.concluidas, p.total)" [style.background]="p.cor"></div>
+            </div>
+            <span class="num">{{ p.concluidas }}/{{ p.total }}</span>
+          </div>
+        } @empty {
+          <p class="vazio">Nenhum projeto com tarefas ainda. <a routerLink="/projetos">Criar projeto</a></p>
+        }
+      </section>
+    </div>
+  } @else if (!erro()) {
+    <p class="vazio">Carregando...</p>
+  }
+</div>
