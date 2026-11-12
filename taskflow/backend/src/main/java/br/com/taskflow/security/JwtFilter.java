@@ -1,5 +1,6 @@
 package br.com.taskflow.security;
 
+import br.com.taskflow.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,9 +21,11 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final UsuarioRepository usuarioRepository;
 
-    public JwtFilter(JwtService jwtService) {
+    public JwtFilter(JwtService jwtService, UsuarioRepository usuarioRepository) {
         this.jwtService = jwtService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override
@@ -32,7 +35,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (cabecalho != null && cabecalho.startsWith("Bearer ")) {
             String token = cabecalho.substring(7);
-            jwtService.validar(token).ifPresent(usuario -> {
+            // Também confere se o usuário ainda existe (ex.: banco recriado com token antigo
+            // no navegador). Se não existir, a requisição segue sem login e recebe 401.
+            jwtService.validar(token)
+                    .filter(usuario -> usuarioRepository.existsById(usuario.id()))
+                    .ifPresent(usuario -> {
                 var autenticacao = new UsernamePasswordAuthenticationToken(usuario, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(autenticacao);
             });
