@@ -84,6 +84,12 @@ npm start
 ```
 Abra `http://localhost:4200`, crie uma conta e pronto.
 
+Testes automáticos (Karma + Jasmine, precisam do Google Chrome instalado):
+```bash
+npm test          # abre o Chrome e roda de novo a cada alteração
+npm run test:ci   # roda uma vez, sem abrir janela
+```
+
 ## Endpoints da API
 
 Todas as rotas, exceto cadastro e login, exigem o cabeçalho `Authorization: Bearer <token>`.
